@@ -4,6 +4,7 @@ import {
   getTasks,
   getTaskById,
   deleteTask,
+  updateTask,
 } from "../controllers/task.controller";
 
 import { protect } from "../middlewares/auth.middleware";
@@ -20,6 +21,8 @@ router.post("/", validate(createTaskSchema), createTask);
 router.get("/", getTasks);
 
 router.get("/:id", getTaskById);
+
+router.put("/:id", updateTask); // 🔥 NEW
 
 router.delete("/:id", deleteTask);
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-
+import { authorize } from "../middlewares/role.middleware";
 import {
   login,
   logout,
@@ -42,5 +42,7 @@ router.get(
   protect,
   me
 );
+
+
 
 export default router;
