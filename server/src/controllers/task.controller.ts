@@ -1,11 +1,26 @@
 import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler";
+import { upload } from "../config/multer";
 
 import ApiError from "../utils/ApiError";
 import { prisma } from "../config/db";
 
+
 export const createTask = asyncHandler(async (req:Request, res:Response) => {
-  const { title, description, priority, status, dueDate, assignedToId } = req.body;
+  const {
+    title,
+    description,
+    priority,
+    status,
+    dueDate,
+    assignedToId,
+  } = req.body;
+
+  const files = req.files as Express.Multer.File[];
+
+  if (files && files.length > 3) {
+    throw new ApiError(400, "Max 3 files allowed");
+  }
 
   const task = await prisma.task.create({
     data: {
@@ -14,16 +29,33 @@ export const createTask = asyncHandler(async (req:Request, res:Response) => {
       priority,
       status,
       dueDate: dueDate ? new Date(dueDate) : undefined,
+      createdById: req.user!.id,
+      assignedToId,
+    },
+  });
 
-      createdById: req.user!.id, // 🔐 ALWAYS SYSTEM CONTROLLED
+  // Save attachments
+  if (files) {
+    await prisma.attachment.createMany({
+      data: files.map((file) => ({
+        filename: file.originalname,
+        filepath: file.path,
+        mimetype: file.mimetype,
+        taskId: task.id,
+      })),
+    });
+  }
 
-      assignedToId: req.user!.role === "ADMIN" ? assignedToId : req.user!.id,
+  const fullTask = await prisma.task.findUnique({
+    where: { id: task.id },
+    include: {
+      attachments: true,
     },
   });
 
   res.status(201).json({
     success: true,
-    task,
+    task: fullTask,
   });
 });
 

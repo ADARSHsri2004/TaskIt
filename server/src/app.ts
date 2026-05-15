@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import notFound from "./middlewares/notFound.middleware";
 import errorHandler from "./middlewares/error.middleware";
 import taskRoutes from "./routes/task.routes";
+import path from "path";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(notFound);
 
 app.use(errorHandler);
