@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes";
 import notFound from "./middlewares/notFound.middleware";
 import errorHandler from "./middlewares/error.middleware";
+import taskRoutes from "./routes/task.routes";
 
 const app = express();
 
@@ -20,12 +21,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "TaskIt API Running"
-  });
+    res.json({
+        success: true,
+        message: "TaskIt API Running"
+    });
 });
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 app.use(notFound);
 
 app.use(errorHandler);
