@@ -7,6 +7,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
+  const isLoggedIn = Boolean(user);
   const isAdmin = user?.role === "ADMIN";
 
   const logout = async () => {
@@ -37,13 +38,17 @@ export default function Navbar() {
           </>
         )}
 
-        <Link to="/tasks/create">
-          Create Task
-        </Link>
+        {isLoggedIn && (
+          <>
+            <Link to="/tasks/create">
+              Create Task
+            </Link>
 
-        <button onClick={logout}>
-          Logout
-        </button>
+            <button onClick={logout}>
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );
