@@ -23,7 +23,7 @@ export default function Navbar() {
       </Link>
 
       <div className="flex gap-4">
-        <Link to="/">Dashboard</Link>
+        <Link to="/dashboard">Dashboard</Link>
 
         {isAdmin && (
           <>

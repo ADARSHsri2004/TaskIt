@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+@layer utilities {
+	.animate-fade-up {
+		animation: fadeUp 700ms cubic-bezier(.2,.8,.2,1) both;
+	}
+
+	.animate-pop {
+		animation: pop 600ms cubic-bezier(.2,.9,.2,1) both;
+	}
+
+	.animate-tilt {
+		animation: tilt 2200ms ease-in-out both;
+	}
+}
+
+@keyframes fadeUp {
+	from { opacity: 0; transform: translateY(12px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+	0% { transform: scale(.98); opacity: 0 }
+	60% { transform: scale(1.02); opacity: 1 }
+	100% { transform: scale(1); }
+}
+
+@keyframes tilt {
+	0% { transform: perspective(900px) rotateX(0deg) translateY(0); }
+	50% { transform: perspective(900px) rotateX(2deg) translateY(-6px); }
+	100% { transform: perspective(900px) rotateX(0deg) translateY(0); }
+}

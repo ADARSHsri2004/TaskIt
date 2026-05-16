@@ -8,6 +8,8 @@ import Login from "../pages/Login";
 
 import Register from "../pages/Register";
 
+import Landing from "../pages/Landing";
+
 import Dashboard from "../pages/Dashboard";
 
 import CreateTask from "../pages/tasks/CreateTask";
@@ -32,8 +34,10 @@ export default function AppRoutes() {
           element={<Register />}
         />
 
+        <Route path="/" element={<Landing />} />
+
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
