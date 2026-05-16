@@ -1,23 +1,56 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:15
-
     container_name: taskit_postgres
-
     restart: always
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: taskit
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d taskit"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: ./server
+    container_name: taskit_server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 5000
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/taskit
+      JWT_SECRET: taskit_access_secret
+      JWT_REFRESH_SECRET: taskit_refresh_secret
+    ports:
+      - "5000:5000"
+    volumes:
+      - server_uploads:/app/src/uploads
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             npx prisma db seed &&
+             npm run dev"
+
+  client:
+    build:
+      context: ./client
+    container_name: taskit_client
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host 0.0.0.0
 
 volumes:
   postgres_data:
+  server_uploads:
