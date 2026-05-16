@@ -37,6 +37,9 @@ export const createTask = asyncHandler(
       throw new ApiError(400, "Max 3 files allowed");
     }
 
+    const defaultAssignedTo =
+      assignedToId || (req.user!.role !== "ADMIN" ? req.user!.id : null);
+
     const task = await prisma.task.create({
       data: {
         title,
@@ -45,7 +48,7 @@ export const createTask = asyncHandler(
         status,
         dueDate: dueDate ? new Date(dueDate) : undefined,
         createdById: req.user!.id,
-        assignedToId: assignedToId || null
+        assignedToId: defaultAssignedTo || null
       }
     });
 
