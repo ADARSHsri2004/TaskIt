@@ -51,7 +51,12 @@ export const register = asyncHandler(
 
     res.status(201).json({
       success: true,
-      user
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
     });
   }
 );

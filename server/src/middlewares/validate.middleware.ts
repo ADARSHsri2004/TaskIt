@@ -8,13 +8,14 @@ const validate =
     next: NextFunction
   ) => {
     try {
-      schema.parse(req.body);
+      req.body = schema.parse(req.body);
 
       next();
     } catch (error: any) {
       return res.status(400).json({
         success: false,
-        errors: error.errors
+        message: "Validation failed",
+        errors: error.issues || error.errors
       });
     }
   };

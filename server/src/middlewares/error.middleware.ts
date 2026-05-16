@@ -6,11 +6,20 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = err.statusCode || 500;
+  const isDbTimeout =
+    err?.code === "ETIMEDOUT" ||
+    err?.meta?.code === "ETIMEDOUT" ||
+    err?.message?.includes("ETIMEDOUT");
+
+  const statusCode = isDbTimeout
+    ? 503
+    : err.statusCode || 500;
 
   res.status(statusCode).json({
     success: false,
-    message: err.message || "Internal Server Error"
+    message: isDbTimeout
+      ? "Database connection timed out. Please check the server database connection and try again."
+      : err.message || "Internal Server Error"
   });
 };
 
