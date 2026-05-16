@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   BarChart3,
   CalendarDays,
@@ -15,6 +15,7 @@ import api from "../api/axios";
 import Navbar from "../components/Navbar";
 import TaskCard from "../components/tasks/TaskCard";
 import type { Task } from "../types";
+import { setTasks } from "../features/tasks/tasksSlice";
 
 type Stats = {
   totalUsers: number;
@@ -25,8 +26,9 @@ type Stats = {
 };
 
 export default function Dashboard() {
+  const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const reduxTasks = useSelector((state: any) => state.tasks.items);
   const [stats, setStats] = useState<Stats | null>(null);
   const [status, setStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -37,25 +39,45 @@ export default function Dashboard() {
 
   const isAdmin = user?.role === "ADMIN";
 
+  // Filter tasks based on criteria
+  const filteredTasks = reduxTasks.filter((task: Task) => {
+    if (status && task.status !== status) return false;
+    if (priority && task.priority !== priority) return false;
+    if (search && !task.title.toLowerCase().includes(search.toLowerCase())) return false;
+    
+    if (dueDateFrom && task.dueDate && new Date(task.dueDate) < new Date(dueDateFrom)) return false;
+    if (dueDateTo && task.dueDate && new Date(task.dueDate) > new Date(dueDateTo)) return false;
+    
+    return true;
+  }).sort((a: Task, b: Task) => {
+    if (sort === "newest") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (sort === "oldest") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    if (sort === "dueDateAsc") {
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    }
+    if (sort === "dueDateDesc") {
+      if (!a.dueDate) return -1;
+      if (!b.dueDate) return 1;
+      return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+    }
+    return 0;
+  });
+
   const fetchTasks = async () => {
     const res = await api.get("/tasks", {
       params: {
-        status,
-        priority,
-        dueDateFrom,
-        dueDateTo,
-        search,
-        sort,
         limit: isAdmin ? 5 : 20
       }
     });
 
-    setTasks(res.data.data);
+    dispatch(setTasks(res.data.data));
   };
 
   useEffect(() => {
     fetchTasks();
-  }, [status, priority, dueDateFrom, dueDateTo, search, sort, isAdmin]);
+  }, [isAdmin]);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -198,11 +220,11 @@ export default function Dashboard() {
           </section>
 
           <section className="grid gap-3">
-            {tasks.map((task) => (
+            {filteredTasks.map((task: Task) => (
               <TaskCard key={task.id} task={task} />
             ))}
 
-            {!tasks.length && (
+            {!filteredTasks.length && (
               <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-gray-600">
                 <ClipboardList className="mx-auto mb-3 h-10 w-10 text-gray-400" />
                 <p className="font-medium text-gray-800">No tasks found.</p>

@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler";
 import ApiError from "../utils/ApiError";
 import { prisma } from "../config/db";
+import websocketService from "../services/websocket.service";
 import {
   getStoredFilename,
   removeFileIfExists,
@@ -91,6 +92,9 @@ export const createTask = asyncHandler(
         createdBy: { select: userSelect }
       }
     });
+
+    // Emit WebSocket event for task creation
+    websocketService.emitTaskCreated(fullTask, req.user!.id);
 
     res.status(201).json({
       success: true,
@@ -287,6 +291,8 @@ export const updateTask = asyncHandler(
       )
     );
 
+    const previousTask = task; // Store previous state for comparison
+
     const updated = await prisma.$transaction(async (tx) => {
       if (idsToDelete.length) {
         await tx.attachment.deleteMany({
@@ -340,6 +346,9 @@ export const updateTask = asyncHandler(
       }
     });
 
+    // Emit WebSocket event for task update
+    websocketService.emitTaskUpdated(fullTask, req.user!.id, previousTask);
+
     res.json({
       success: true,
       task: fullTask
@@ -384,6 +393,9 @@ export const deleteTask = asyncHandler(
         where: { id: taskId }
       })
     ]);
+
+    // Emit WebSocket event for task deletion
+    websocketService.emitTaskDeleted(taskId, task, req.user!.id);
 
     res.json({
       success: true,
