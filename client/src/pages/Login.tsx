@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { useDispatch } from "react-redux";
-import { setToken } from "../features/auth/authSlice";
+import { setToken, setUser } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -18,6 +18,7 @@ export default function Login() {
     });
 
     dispatch(setToken(res.data.accessToken));
+    dispatch(setUser(res.data.user));
 
     navigate("/");
   };

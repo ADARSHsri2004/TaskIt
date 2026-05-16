@@ -15,6 +15,8 @@ import CreateTask from "../pages/tasks/CreateTask";
 import TaskDetails from "../pages/tasks/TaskDetails";
 
 import ProtectedRoute from "./ProtectedRoute";
+import AdminUsers from "../pages/admin/AdminUsers";
+import AdminTasks from "../pages/admin/AdminTasks";
 
 export default function AppRoutes() {
   return (
@@ -44,6 +46,24 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute>
               <CreateTask />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/tasks"
+          element={
+            <ProtectedRoute roles={["ADMIN"]}>
+              <AdminTasks />
             </ProtectedRoute>
           }
         />

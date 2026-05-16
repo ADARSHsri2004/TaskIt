@@ -7,3 +7,5 @@ dist
 uploads
 
 coverage
+
+*.log

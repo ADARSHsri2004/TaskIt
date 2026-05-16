@@ -1,9 +1,14 @@
 import multer from "multer";
 import path from "path";
+import {
+  ensureUploadDir,
+  uploadDir
+} from "../utils/fileStorage";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "src/uploads");
+    ensureUploadDir();
+    cb(null, uploadDir);
   },
 
   filename: (req, file, cb) => {
@@ -22,9 +27,14 @@ export const upload = multer({
   },
 
   fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
+    const ext = path
+      .extname(file.originalname)
+      .toLowerCase();
 
-    if (ext !== ".pdf") {
+    if (
+      ext !== ".pdf" ||
+      file.mimetype !== "application/pdf"
+    ) {
       return cb(new Error("Only PDFs allowed"));
     }
 

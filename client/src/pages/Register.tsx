@@ -2,11 +2,13 @@ import { useState } from "react";
 import api from "../api/axios";
 
 export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
     await api.post("/auth/register", {
+      name,
       email,
       password,
     });
@@ -18,6 +20,12 @@ export default function Register() {
     <div className="flex h-screen items-center justify-center">
       <div className="p-6 border rounded w-80">
         <h2 className="text-xl mb-4">Register</h2>
+
+        <input
+          placeholder="Name"
+          className="border w-full p-2 mb-2"
+          onChange={(e) => setName(e.target.value)}
+        />
 
         <input
           placeholder="Email"

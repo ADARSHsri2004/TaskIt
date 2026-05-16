@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authorize } from "../middlewares/role.middleware";
 import {
   login,
   logout,

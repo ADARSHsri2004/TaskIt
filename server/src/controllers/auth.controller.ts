@@ -24,9 +24,9 @@ export const register = asyncHandler(
     res: Response
   ) => {
     const {
+      name,
       email,
-      password,
-      role
+      password
     } = req.body;
 
     const existingUser =
@@ -43,9 +43,10 @@ export const register = asyncHandler(
       await bcrypt.hash(password, 10);
 
     const user = await createUser({
+      name,
       email,
       password: hashedPassword,
-      role
+      role: "USER"
     });
 
     res.status(201).json({
@@ -125,6 +126,7 @@ export const login = asyncHandler(
 
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role
       }
@@ -161,6 +163,7 @@ export const me = asyncHandler(
 
         select: {
           id: true,
+          name: true,
           email: true,
           role: true
         }

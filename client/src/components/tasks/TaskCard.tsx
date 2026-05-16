@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import type { Task } from "../../types";
 
 export default function TaskCard({
   task,
-}: any) {
+}: {
+  task: Task;
+}) {
   return (
     <div className="border p-4 rounded mb-3 shadow">
       <h2 className="text-xl">
@@ -11,7 +14,7 @@ export default function TaskCard({
 
       <p>{task.description}</p>
 
-      <div className="flex gap-2 mt-2">
+      <div className="flex flex-wrap gap-2 mt-2">
         <span className="bg-gray-200 px-2 py-1 rounded">
           {task.status}
         </span>
@@ -19,6 +22,18 @@ export default function TaskCard({
         <span className="bg-blue-200 px-2 py-1 rounded">
           {task.priority}
         </span>
+
+        {task.assignedTo && (
+          <span className="bg-green-100 px-2 py-1 rounded">
+            {task.assignedTo.name}
+          </span>
+        )}
+
+        {task.dueDate && (
+          <span className="bg-yellow-100 px-2 py-1 rounded">
+            Due {new Date(task.dueDate).toLocaleDateString()}
+          </span>
+        )}
       </div>
 
       <Link
