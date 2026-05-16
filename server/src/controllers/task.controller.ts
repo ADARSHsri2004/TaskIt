@@ -16,6 +16,26 @@ const userSelect = {
   role: true
 };
 
+const parseDateParam = (value: unknown) => {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(String(value));
+
+  if (Number.isNaN(date.getTime())) {
+    throw new ApiError(400, "Invalid due date filter");
+  }
+
+  return date;
+};
+
+const endOfDay = (date: Date) => {
+  const result = new Date(date);
+  result.setHours(23, 59, 59, 999);
+  return result;
+};
+
 export const createTask = asyncHandler(
   async (req: Request, res: Response) => {
     const {
@@ -84,6 +104,8 @@ export const getTasks = asyncHandler(
     const {
       status,
       priority,
+      dueDateFrom,
+      dueDateTo,
       search,
       sort = "newest",
       page = 1,
@@ -98,6 +120,16 @@ export const getTasks = asyncHandler(
 
     if (priority) {
       filters.priority = priority;
+    }
+
+    const dueFrom = parseDateParam(dueDateFrom);
+    const dueTo = parseDateParam(dueDateTo);
+
+    if (dueFrom || dueTo) {
+      filters.dueDate = {
+        ...(dueFrom ? { gte: dueFrom } : {}),
+        ...(dueTo ? { lte: endOfDay(dueTo) } : {})
+      };
     }
 
     if (search) {
@@ -124,7 +156,17 @@ export const getTasks = asyncHandler(
     const orderBy =
       sort === "oldest"
         ? { createdAt: "asc" as const }
-        : { createdAt: "desc" as const };
+        : sort === "dueDateAsc"
+          ? [
+              { dueDate: { sort: "asc" as const, nulls: "last" as const } },
+              { createdAt: "desc" as const }
+            ]
+          : sort === "dueDateDesc"
+            ? [
+                { dueDate: { sort: "desc" as const, nulls: "last" as const } },
+                { createdAt: "desc" as const }
+              ]
+            : { createdAt: "desc" as const };
 
     const [tasks, total] = await Promise.all([
       prisma.task.findMany({

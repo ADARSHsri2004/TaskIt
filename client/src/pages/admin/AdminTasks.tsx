@@ -44,6 +44,8 @@ export default function AdminTasks() {
   const [priority, setPriority] = useState("");
   const [sort, setSort] = useState("newest");
   const [search, setSearch] = useState("");
+  const [dueDateFrom, setDueDateFrom] = useState("");
+  const [dueDateTo, setDueDateTo] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const limit = 10;
@@ -54,6 +56,8 @@ export default function AdminTasks() {
       params: {
         status,
         priority,
+        dueDateFrom,
+        dueDateTo,
         search,
         sort,
         page,
@@ -67,7 +71,7 @@ export default function AdminTasks() {
 
   useEffect(() => {
     fetchTasks();
-  }, [status, priority, sort, search, page]);
+  }, [status, priority, dueDateFrom, dueDateTo, sort, search, page]);
 
   const deleteTask = async (task: Task) => {
     const confirmed = window.confirm(
@@ -121,7 +125,7 @@ export default function AdminTasks() {
               Filters
             </div>
 
-            <div className="grid gap-3 md:grid-cols-4">
+            <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
               <label className="relative">
                 <Search className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
                 <input
@@ -163,13 +167,46 @@ export default function AdminTasks() {
                 <option value="LOW">Low</option>
               </select>
 
+              <label className="relative">
+                <CalendarDays className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={dueDateFrom}
+                  onChange={(event) => {
+                    setPage(1);
+                    setDueDateFrom(event.target.value);
+                  }}
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-9 pr-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
+                  aria-label="Due date from"
+                />
+              </label>
+
+              <label className="relative">
+                <CalendarDays className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={dueDateTo}
+                  onChange={(event) => {
+                    setPage(1);
+                    setDueDateTo(event.target.value);
+                  }}
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-9 pr-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
+                  aria-label="Due date to"
+                />
+              </label>
+
               <select
                 value={sort}
-                onChange={(event) => setSort(event.target.value)}
+                onChange={(event) => {
+                  setPage(1);
+                  setSort(event.target.value);
+                }}
                 className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
               >
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
+                <option value="dueDateAsc">Due date earliest</option>
+                <option value="dueDateDesc">Due date latest</option>
               </select>
             </div>
           </section>

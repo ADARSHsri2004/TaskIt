@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   BarChart3,
+  CalendarDays,
   CheckCircle2,
   ClipboardList,
   Filter,
@@ -30,6 +31,9 @@ export default function Dashboard() {
   const [status, setStatus] = useState("");
   const [priority, setPriority] = useState("");
   const [search, setSearch] = useState("");
+  const [dueDateFrom, setDueDateFrom] = useState("");
+  const [dueDateTo, setDueDateTo] = useState("");
+  const [sort, setSort] = useState("newest");
 
   const isAdmin = user?.role === "ADMIN";
 
@@ -38,7 +42,10 @@ export default function Dashboard() {
       params: {
         status,
         priority,
+        dueDateFrom,
+        dueDateTo,
         search,
+        sort,
         limit: isAdmin ? 5 : 20
       }
     });
@@ -48,7 +55,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchTasks();
-  }, [status, priority, search, isAdmin]);
+  }, [status, priority, dueDateFrom, dueDateTo, search, sort, isAdmin]);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -122,7 +129,7 @@ export default function Dashboard() {
               Filters
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
               <label className="relative">
                 <Search className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
                 <input
@@ -153,6 +160,39 @@ export default function Dashboard() {
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
                 <option value="HIGH">High</option>
+              </select>
+
+              <label className="relative">
+                <CalendarDays className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={dueDateFrom}
+                  onChange={(event) => setDueDateFrom(event.target.value)}
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-9 pr-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
+                  aria-label="Due date from"
+                />
+              </label>
+
+              <label className="relative">
+                <CalendarDays className="absolute left-3 top-3.5 h-4 w-4 text-gray-400" />
+                <input
+                  type="date"
+                  value={dueDateTo}
+                  onChange={(event) => setDueDateTo(event.target.value)}
+                  className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-9 pr-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
+                  aria-label="Due date to"
+                />
+              </label>
+
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value)}
+                className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-950 outline-none transition-all duration-200 hover:border-gray-300 focus:border-black focus:ring-4 focus:ring-gray-100"
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+                <option value="dueDateAsc">Due date earliest</option>
+                <option value="dueDateDesc">Due date latest</option>
               </select>
             </div>
           </section>
