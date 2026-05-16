@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-100">
+    <div className="min-h-screen bg-linear-to-b from-white to-gray-100">
       <Navbar />
 
       <header className="container mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-10">
@@ -34,7 +34,7 @@ export default function Landing() {
 
         <div className="flex-1 flex justify-center lg:justify-end">
           <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 transform hover:-translate-y-2 transition-transform duration-700 animate-tilt">
-            <div className="bg-gradient-to-br from-indigo-500 via-pink-500 to-yellow-400 rounded-lg p-1 mb-4">
+            <div className="bg-linear-to-br from-indigo-500 via-pink-500 to-yellow-400 rounded-lg p-1 mb-4">
               <div className="bg-white rounded-lg p-6">
                 <h3 className="font-semibold text-gray-800">Project Alpha</h3>
                 <p className="text-sm text-gray-500">2 tasks due • 1 high priority</p>
@@ -68,9 +68,43 @@ export default function Landing() {
           <p className="text-gray-600 mb-6">A simple, focused task management experience.</p>
 
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="p-4 bg-white rounded shadow">Made by: [Your Name]</div>
-            <div className="p-4 bg-white rounded shadow">Made by: [Your Friend]</div>
-            <div className="p-4 bg-white rounded shadow">Made by: [Contributor]</div>
+            <div className="p-4 bg-white rounded shadow">Made by: Adarsh Srivastava</div>
+
+            <a
+              href="https://github.com/ADARSHsri2004"
+              target="_blank"
+              rel="noreferrer"
+              className="p-4 bg-white rounded shadow flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+                aria-hidden="true"
+              >
+                <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.68c-2.77.6-3.35-1.17-3.35-1.17-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.88 1.52 2.31 1.08 2.87.83.09-.64.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.93 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.48 9.48 0 0 1 5 0c1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.83-2.35 4.68-4.58 4.92.36.31.69.92.69 1.86v2.76c0 .26.17.58.69.48A10 10 0 0 0 12 2Z" />
+              </svg>
+              <span>GitHub</span>
+            </a>
+
+            <a
+              href="https://www.linkedin.com/in/adarsh-srivastava-871793261/"
+              target="_blank"
+              rel="noreferrer"
+              className="p-4 bg-white rounded shadow flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+                aria-hidden="true"
+              >
+                <path d="M4.98 3.5A2.5 2.5 0 1 1 2.5 6a2.5 2.5 0 0 1 2.48-2.5ZM3 8.5h4V22H3V8.5Zm7 0h3.84v1.85h.05c.54-1.02 1.88-2.1 3.87-2.1C21.01 8.25 22 10.4 22 13.13V22h-4v-7.55c0-1.8-.03-4.12-2.52-4.12-2.52 0-2.9 1.97-2.9 4V22h-4V8.5Z" />
+              </svg>
+              <span>LinkedIn</span>
+            </a>
           </div>
         </section>
       </main>
